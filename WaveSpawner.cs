@@ -45,7 +45,9 @@ public class WaveSpawner : MonoBehaviour {
 			Debug.LogError("No spawn points referenced.");
 		}
 
-		waveCountdown = timeBetweenWaves;
+        GameMaster.gm.onToggleUpgradeMenu += OnUpgradeMenuToggle;
+
+        waveCountdown = timeBetweenWaves;
 	}
 
 	void Update()
@@ -131,4 +133,8 @@ public class WaveSpawner : MonoBehaviour {
 		Instantiate(_enemy, _sp.position, _sp.rotation);
 	}
 
+    void OnUpgradeMenuToggle(bool active)
+    {
+        GetComponent<WaveSpawner>().enabled = !active;
+    }
 }

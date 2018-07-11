@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets._2D;
 
+[RequireComponent(typeof(EnemyAI))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class Enemy : MonoBehaviour {
 
     [System.Serializable]
@@ -29,6 +32,10 @@ public class Enemy : MonoBehaviour {
     public float shakeAmt = 0.1f;
     public float shakeLength = 0.1f;
 
+    public string deathSoundName = "Explosion";
+
+    public int moneyDrop = 10;
+
     [Header("Optional: ")]
     [SerializeField]
     private StatusIndicator statusIndicator;
@@ -46,6 +53,14 @@ public class Enemy : MonoBehaviour {
         {
             Debug.LogError("no death particles referenced on enemy");
         }
+
+        GameMaster.gm.onToggleUpgradeMenu += OnUpgradeMenuToggle;
+    }
+
+    void OnUpgradeMenuToggle(bool active)
+    {
+        GetComponent<EnemyAI>().enabled = !active;
+        GetComponent<Rigidbody2D>().isKinematic = !true;
     }
 
     public void DamageEnemy(int damage)
@@ -70,6 +85,10 @@ public class Enemy : MonoBehaviour {
             _player.DamagePlayer(stats.damage);
             DamageEnemy(999999);
         }
+    }
 
+    void OnDestroy()
+    {
+        GameMaster.gm.onToggleUpgradeMenu -= OnUpgradeMenuToggle;
     }
 }
